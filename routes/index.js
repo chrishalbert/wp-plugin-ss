@@ -1,54 +1,58 @@
-var express = require('express');
-var router = express.Router();
-var Promise = require('bluebird');
-var https = require('https');
+const express = require('express');
 
-var ResultsPage = require ("../lib/results-page");
+const router = express.Router();
+const Promise = require('bluebird');
+const https = require('https');
 
-var PromiseResultsPage = Promise.method(function(url) {
-    return new Promise(function(resolve, reject) {
-        var request = https.get(url, function (response) {
-            var body = '';
-            response.on('data', function (data) {
-                body += data;
-            });
+const ResultsPage = require('../lib/results-page');
 
-            response.on('end', function() {
-                resolve(new ResultsPage(body));
-            });
-        });
-
-        request.on('error', function(error) {
-            reject(error);
-        });
-
-        request.end();
+const PromiseResultsPage = Promise.method(url => new Promise((resolve, reject) => {
+  const request = https.get(url, (response) => {
+    let body = '';
+    response.on('data', (data) => {
+      body += data;
     });
-});
+
+    response.on('end', () => {
+      resolve(new ResultsPage(body));
+    });
+  });
+
+  request.on('error', (error) => {
+    reject(error);
+  });
+
+  request.end();
+}));
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', (req, res) => {
   res.render('index', { title: 'Express' });
 });
 
-router.get('/plugins', function(req, res, next) {
-  var plugins = [],
-      search = req.query.search.replace(/ /g,"+");
+router.get('/plugins', (req, res) => {
+  let plugins = [];
+  const allPages = [];
+  const search = req.query.search.replace(/ /g, '+');
 
-  var response = PromiseResultsPage('https://wordpress.org/plugins/search/' + search)
-      .then(function processLandingResultsPage(landingResultsPage) {
-          plugins = plugins.concat(landingResultsPage.getAllPlugins());
-          return landingResultsPage.getAllResultsPages();
+  const response = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}`)
+      .then((landingResultsPage) => {
+        plugins = plugins.concat(landingResultsPage.getAllPlugins());
+        return landingResultsPage.getAllResultsPages();
       })
-      .then(function processSubsequentResultsPages(subsequentResultsPages) {
-          subsequentResultsPages.forEach(function (url) {
-            var request = PromiseResultsPage(url)
-                .then(function(resultsPage) {
-                    plugins = plugins.concat(resultsPage.getAllPlugins());
-                });
-          });
-          res.send(plugins);
+      .then((subsequentResultsPages) => {
+        subsequentResultsPages.forEach((url) => {
+          allPages.push(PromiseResultsPage(url).then((resultsPage) => {
+            plugins = plugins.concat(resultsPage.getAllPlugins());
+          }));
+        });
+        return allPages;
+          // res.send(plugins);
       });
+
+  Promise.all(response).then(() => {
+    res.send(plugins);
+  });
 });
 
 module.exports = router;
