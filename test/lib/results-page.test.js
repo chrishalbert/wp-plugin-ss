@@ -8,6 +8,7 @@ var Plugin = require('./../../lib/plugin');
 var allResultsPages = [],
     allPlugins = [];
 
+
 before(function readPluginFile() {
     fs.readFile(process.env.ROOT_DIR + 'test/data/results-page.html', 'utf8', function (err, data) {
         if (err) {
