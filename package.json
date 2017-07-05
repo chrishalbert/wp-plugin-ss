@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha",
-    "test-cov": "./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot test/ --recursive",
+    "build": "npm run-script lint && npm run-script test-cov",
+    "test": "./node_modules/mocha/bin/mocha --check-leaks test/ --recursive",
+    "test-cov": "./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/ --recursive",
     "lint": "./node_modules/eslint/bin/eslint.js **/*.js"
   },
   "dependencies": {
