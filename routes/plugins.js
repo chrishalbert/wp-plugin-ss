@@ -25,11 +25,6 @@ const PromiseResultsPage = Promise.method(url => new Promise((resolve, reject) =
   request.end();
 }));
 
-/* GET home page. */
-router.get('/', (req, res) => {
-  res.render('index', { title: 'Express' });
-});
-
 router.get('/plugins', (req, res) => {
   let plugins = [];
   const allPages = [];
