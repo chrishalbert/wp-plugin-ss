@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Promise = require('bluebird');
 const https = require('https');
+const pluginsQuery = require('../validators/plugins-query');
 
 const ResultsPage = require('../lib/results-page');
 
@@ -25,10 +26,18 @@ const PromiseResultsPage = Promise.method(url => new Promise((resolve, reject) =
   request.end();
 }));
 
-router.get('/plugins', (req, res) => {
+router.get('/plugins', (req, res, next) => {
   let plugins = [];
   const allPages = [];
-  const search = req.query.search.replace(/ /g, '+');
+  const search = req.query.search.trim().replace(/ /g, '+');
+  req.checkQuery(pluginsQuery);
+  req.checkQuery('sort', 'Must have valid sort values.').isSortedCsv();
+
+  req.getValidationResult().then(function(result) {
+    if (!result.isEmpty()) {
+      return res.status(400).send(result.array());
+    }
+  });
 
   const response = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}`)
       .then((landingResultsPage) => {
@@ -42,7 +51,6 @@ router.get('/plugins', (req, res) => {
           }));
         });
         return allPages;
-          // res.send(plugins);
       });
 
   Promise.all(response).then(() => {

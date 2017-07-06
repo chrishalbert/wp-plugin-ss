@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/plugins');
 
+var expressValidator = require('express-validator');
+var isSortedCsv = require('./validators/is-sorted-csv');
 var app = express();
 
 // view engine setup
@@ -18,6 +20,14 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Add validation library with custom validator for verifying sort format
+app.use(expressValidator({
+  customValidators: {
+    isSortedCsv
+  }
+}));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
