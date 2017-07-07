@@ -28,7 +28,7 @@ describe('www', function() {
   });
   it('fails with minReviews not an integer /plugins?search=yes&minReviews=no', function testPluginWithNoParams(done) {
     request(server).get('/plugins?search=yes&minReviews=no').expect(400, /Must be an integer./, done);
-  }); 
+  });
   it('fails with maxReviews not an integer /plugins?search=yes&maxReviews=no', function testPluginWithNoParams(done) {
     request(server).get('/plugins?search=yes&maxReviews=no').expect(400, /Must be an integer./, done);
   });
@@ -37,5 +37,8 @@ describe('www', function() {
   });
   it('fails with maxInstalls not an integer /plugins?search=yes&maxInstalls=no', function testPluginWithNoParams(done) {
     request(server).get('/plugins?search=yes&maxInstalls=no').expect(400, /Must be an integer./, done);
+  });
+  it('fails with invalid sort params /plugins?search=yes&sort=invalidSort', function testPluginWithNoParams(done) {
+    request(server).get('/plugins?search=yes&sort=invalidSort').expect(400, /Must have valid sort values./, done);
   });
 });
