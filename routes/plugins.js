@@ -29,28 +29,30 @@ const PromiseResultsPage = Promise.method(url => new Promise((resolve, reject) =
 router.get('/plugins', (req, res) => {
   let plugins = [];
   const allPages = [];
-  const search = req.query.search.trim().replace(/ /g, '+');
+  const search = ('search' in req.query) ? req.query.search.trim().replace(/ /g, '+') : '';
+
   req.checkQuery(pluginsQuery);
   req.checkQuery('sort', 'Must have valid sort values.').isSortedCsv();
-
-  const resultsPagesPromise = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}`)
-    .then((landingResultsPage) => {
-      plugins = plugins.concat(landingResultsPage.getAllPlugins());
-      return landingResultsPage.getAllResultsPages();
-    })
-    .then((subsequentResultsPages) => {
-      subsequentResultsPages.forEach((url) => {
-        allPages.push(PromiseResultsPage(url).then((resultsPage) => {
-          plugins = plugins.concat(resultsPage.getAllPlugins());
-        }));
-      });
-      return allPages;
-    });
 
   req.getValidationResult().then((result) => {
     if (!result.isEmpty()) {
       return res.status(400).send(result.array());
     }
+
+    const resultsPagesPromise = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}`)
+      .then((landingResultsPage) => {
+        plugins = plugins.concat(landingResultsPage.getAllPlugins());
+        return landingResultsPage.getAllResultsPages();
+      })
+      .then((subsequentResultsPages) => {
+        subsequentResultsPages.forEach((url) => {
+          allPages.push(PromiseResultsPage(url).then((resultsPage) => {
+            plugins = plugins.concat(resultsPage.getAllPlugins());
+          }));
+        });
+        return allPages;
+      });
+
     return Promise.all(resultsPagesPromise).then(() => res.send(plugins));
   });
 });
