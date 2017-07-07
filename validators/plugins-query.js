@@ -1,7 +1,6 @@
 module.exports = {
   search: {
     in: 'query',
-    notEmpty: 'true',
     isLength: {
       options: [{ min: 3 }],
     },
