@@ -1,57 +1,57 @@
 module.exports = {
-  'search': {
+  search: {
     in: 'query',
     notEmpty: 'true',
     isLength: {
-      options: [{ min: 3}]
+      options: [{ min: 3 }],
     },
-    errorMessage: 'Must be 3 characters.'
+    errorMessage: 'Must be 3 characters.',
   },
-  'author': {
+  author: {
     in: 'query',
     optional: true,
   },
-  'minRatings': {
-    in: 'query',
-    optional: true,
-    isInt: true,
-    errorMessage: 'Must be an integer.'
-  },
-  'maxRatings': {
+  minRatings: {
     in: 'query',
     optional: true,
     isInt: true,
-    errorMessage: 'Must be an integer.'
+    errorMessage: 'Must be an integer.',
   },
-  'minReviews': {
+  maxRatings: {
     in: 'query',
     optional: true,
     isInt: true,
-    errorMessage: 'Must be an integer.'
+    errorMessage: 'Must be an integer.',
   },
-  'maxReviews': {
+  minReviews: {
     in: 'query',
     optional: true,
     isInt: true,
-    errorMessage: 'Must be an integer.'
+    errorMessage: 'Must be an integer.',
   },
-  'minInstalls': {
+  maxReviews: {
     in: 'query',
     optional: true,
     isInt: true,
-    errorMessage: 'Must be an integer.'
+    errorMessage: 'Must be an integer.',
   },
-  'maxInstalls': {
+  minInstalls: {
     in: 'query',
     optional: true,
     isInt: true,
-    errorMessage: 'Must be an integer.'
+    errorMessage: 'Must be an integer.',
   },
-  'minVersion': {
+  maxInstalls: {
+    in: 'query',
+    optional: true,
+    isInt: true,
+    errorMessage: 'Must be an integer.',
+  },
+  minVersion: {
     in: 'query',
     optional: true,
   },
-  'maxVersion': {
+  maxVersion: {
     in: 'query',
     optional: true,
   },

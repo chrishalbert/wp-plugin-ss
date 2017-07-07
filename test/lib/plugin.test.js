@@ -27,7 +27,7 @@ describe('Plugin', function() {
             plugin.rating.should.equal(4.5);
         });
         it('should map the plugin ratingCount', function () {
-            plugin.ratingCount.should.equal(807);
+            plugin.reviews.should.equal(807);
         });
         it('should map the plugin icon', function () {
             plugin.icon.should.equal('https://ps.w.org/ninja-forms/assets/icon-128x128.png?rev=1649747');
