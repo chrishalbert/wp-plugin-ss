@@ -1,12 +1,14 @@
 {
   "name": "wp-plugin-ss",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.1.0",
   "scripts": {
     "build": "npm run-script lint && npm run-script test-cov",
     "test": "./node_modules/mocha/bin/mocha --check-leaks test/ --recursive",
     "test-cov": "./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot --check-leaks test/ --recursive",
     "lint": "./node_modules/eslint/bin/eslint.js **/*.js"
+  },
+  "bin": {
+    "wp-plugin-ss": "bin/www"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
