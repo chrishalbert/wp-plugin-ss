@@ -42,7 +42,7 @@ router.get('/plugins', (req, res) => {
 
     const sorts = typeof req.query.sort === 'undefined' ? [] : req.query.sort.split(',');
 
-    const resultsPagesPromise = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}`)
+    const resultsPagesPromise = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}/`)
       .then(landingResultsPage => landingResultsPage.getAllResultsPages())
       .then((subsequentResultsPages) => {
         subsequentResultsPages.forEach((url) => {

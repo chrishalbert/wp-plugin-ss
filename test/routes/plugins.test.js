@@ -9,15 +9,15 @@ describe('routes/plugins', function() {
   beforeEach(function () {
     delete require.cache[require.resolve('./../../bin/www')];
     server = require('./../../bin/www');
-    fs.readFile(process.env.ROOT_DIR + 'test/data/one-results-page.html', 'utf8', function (err, data) {
+    fs.readFile(__dirname + '/../data/one-results-page.html', 'utf8', function (err, data) {
       if (err) {
         return console.log(err);
       }
       nock('https://wordpress.org')
-        .get('/plugins/search/ibericode')
+        .get('/plugins/search/ibericode/')
         .reply(200, data);
       nock('https://wordpress.org')
-        .get('/plugins/search/ibericode/1')
+        .get('/plugins/search/ibericode/page/1')
         .reply(200, data);
     });
   });
