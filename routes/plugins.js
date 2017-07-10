@@ -4,6 +4,7 @@ const router = express.Router();
 const Promise = require('bluebird');
 const https = require('https');
 const pluginsQuery = require('../validators/plugins-query');
+const firstBy = require('thenby');
 
 const ResultsPage = require('../lib/results-page');
 
@@ -39,11 +40,10 @@ router.get('/plugins', (req, res) => {
       return res.status(400).send(result.array());
     }
 
+    const sorts = typeof req.query.sort === 'undefined' ? [] : req.query.sort.split(',');
+
     const resultsPagesPromise = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}`)
-      .then((landingResultsPage) => {
-        plugins = plugins.concat(landingResultsPage.getAllPlugins());
-        return landingResultsPage.getAllResultsPages();
-      })
+      .then(landingResultsPage => landingResultsPage.getAllResultsPages())
       .then((subsequentResultsPages) => {
         subsequentResultsPages.forEach((url) => {
           allPages.push(PromiseResultsPage(url).then((resultsPage) => {
@@ -53,7 +53,28 @@ router.get('/plugins', (req, res) => {
         return allPages;
       });
 
-    return Promise.all(resultsPagesPromise).then(() => res.send(plugins));
+    return Promise.all(resultsPagesPromise).then(() => {
+      let thenBySort;
+      sorts.forEach((sortParam, i) => {
+        let direction = 1;
+        let param = sortParam;
+        if (sortParam[0] === '-') {
+          direction = -1;
+          param = sortParam.substring(1);
+        }
+        if (i === 0) {
+          thenBySort = firstBy(param, direction);
+        } else {
+          thenBySort = thenBySort.thenBy(param, direction);
+        }
+      });
+
+      if (sorts.length) {
+        plugins.sort(thenBySort);
+      }
+
+      res.send(plugins);
+    });
   });
 });
 

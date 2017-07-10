@@ -38,6 +38,7 @@ describe('routes/plugins', function() {
     request(server).get('/plugins?search=ibericode&sort=name').expect(200)
       .expect(function(res) {
         assert.equal(res.body[0].name, 'Boxzilla');
+        assert.equal(res.body.length, 12);
       })
       .end(function(err) {
         done(err);
@@ -48,17 +49,21 @@ describe('routes/plugins', function() {
     request(server).get('/plugins?search=ibericode&sort=-name').expect(200)
       .expect(function(res) {
         assert.equal(res.body[0].name, 'WP Newsletter Subscription');
+        assert.equal(res.body.length, 12);
       })
       .end(function(err) {
         done(err);
-      });  });
+      });
+  });
 
   it('sorts plugins by multiple params /plugins?search=ibericode&sort=author,installs', function sortsByAuthorInstalls(done) {
     request(server).get('/plugins?search=ibericode&sort=author,installs').expect(200)
       .expect(function(res) {
-        assert.equal(res.body[1].name, 'MailChimp for Wordpress - WPML Integration');
+        assert.equal(res.body[1].name, 'MailChimp for WordPress – WPML Integration');
+        assert.equal(res.body.length, 12);
       })
       .end(function(err) {
         done(err);
-      });  });
+      });
+  });
 });
