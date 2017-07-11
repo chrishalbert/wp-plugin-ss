@@ -1,5 +1,5 @@
 # Wordpress Plugin Simplified Search
-[![Build Status](https://travis-ci.org/chrishalbert/wp-plugin-ss.svg?branch=master)](https://travis-ci.org/chrishalbert/wp-plugin-ss)
+[![Build Status](https://travis-ci.org/chrishalbert/wp-plugin-ss.svg?branch=master)](https://travis-ci.org/chrishalbert/wp-plugin-ss) [![Coverage Status](https://coveralls.io/repos/github/chrishalbert/wp-plugin-ss/badge.svg?branch=master)](https://coveralls.io/github/chrishalbert/wp-plugin-ss?branch=master) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Node API that provides filtering and sorting for WordPress Plugins. 
 
