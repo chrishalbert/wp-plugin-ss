@@ -1,6 +1,6 @@
 {
   "name": "wp-plugin-ss",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "scripts": {
     "build": "npm run-script lint && npm run-script test-cov",
     "test": "./node_modules/mocha/bin/mocha --timeout 5000 --check-leaks test/ --recursive",
