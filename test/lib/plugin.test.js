@@ -7,7 +7,7 @@ var Plugin = require('./../../lib/plugin');
 var plugin;
 
 before(function readPluginFile() {
-    fs.readFile(process.env.ROOT_DIR + 'test/data/plugin.html', 'utf8', function (err, data) {
+    fs.readFile(__dirname + '/../data/plugin.html', 'utf8', function (err, data) {
         if (err) {
             return console.log(err);
         }
