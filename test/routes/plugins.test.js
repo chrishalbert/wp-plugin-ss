@@ -66,4 +66,94 @@ describe('routes/plugins', function() {
         done(err);
       });
   });
+
+  it('filters by author /plugins?search=ibericode&author=ibericode', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&author=ibericode').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 10);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by minRating /plugins?search=ibericode&minRating=5', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&minRating=5').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 7);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by maxRating /plugins?search=ibericode&maxRating=0', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&maxRating=0').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 2);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by minReviews /plugins?search=ibericode&minReviews=100', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&minReviews=100').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 1);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by maxReviews /plugins?search=ibericode&maxReviews=10', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&maxReviews=10').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 5);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by minInstalls /plugins?search=ibericode&minInstalls=1000', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&minInstalls=1000').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 9);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by maxInstalls /plugins?search=ibericode&maxInstalls=5000', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&maxInstalls=5000').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 5);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by minVersion /plugins?search=ibericode&minVersion=4.7', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&minVersion=4.7').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 8);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
+
+  it('filters by maxVersion /plugins?search=ibericode&maxVersion=4.6', function filterByAuthor(done) {
+    request(server).get('/plugins?search=ibericode&maxVersion=4.6').expect(200)
+      .expect(function(res) {
+        assert.equal(res.body.length, 2);
+      })
+      .end(function(err) {
+        done(err);
+      });
+  });
 });

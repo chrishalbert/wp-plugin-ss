@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 const https = require('https');
 const pluginsQuery = require('../validators/plugins-query');
 const firstBy = require('thenby');
+const filters = require('../lib/filters')
 
 const ResultsPage = require('../lib/results-page');
 
@@ -26,6 +27,7 @@ const PromiseResultsPage = Promise.method(url => new Promise((resolve, reject) =
 
   request.end();
 }));
+
 
 router.get('/plugins', (req, res) => {
   let plugins = [];
@@ -55,6 +57,18 @@ router.get('/plugins', (req, res) => {
 
     return Promise.all(resultsPagesPromise).then(() => {
       let thenBySort;
+
+      // Apply filter by looping through the available filters
+      for (let queryParam in filters) {
+        // If the filter is in the query string
+        if (queryParam in req.query) {
+          // Apply it
+          plugins = plugins.filter(function(plugin) {
+            return filters[queryParam].comparison(req.query[queryParam], plugin[filters[queryParam].property]);
+          });
+        }
+      }
+
       sorts.forEach((sortParam, i) => {
         let direction = 1;
         let param = sortParam;
