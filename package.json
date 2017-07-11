@@ -1,6 +1,6 @@
 {
   "name": "wp-plugin-ss",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "scripts": {
     "build": "npm run-script lint && npm run-script test-cov",
     "test": "./node_modules/mocha/bin/mocha --check-leaks test/ --recursive",
@@ -10,6 +10,7 @@
   "bin": {
     "wp-plugin-ss": "bin/www"
   },
+  "license": "MIT",
   "dependencies": {
     "bluebird": "^3.5.0",
     "body-parser": "~1.13.2",
