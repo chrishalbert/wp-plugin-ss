@@ -1,4 +1,6 @@
-# Wordpress Plugin Simplified Search 
+# Wordpress Plugin Simplified Search
+[![Build Status](https://travis-ci.org/chrishalbert/wp-plugin-ss.svg?branch=master)](https://travis-ci.org/chrishalbert/wp-plugin-ss)
+
 A Node API that provides filtering and sorting for WordPress Plugins. 
 
 (or wp-plugin-ss, if you are into the brevity thing) 
