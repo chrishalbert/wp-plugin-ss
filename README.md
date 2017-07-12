@@ -33,8 +33,8 @@ Go to http://127.0.0.1:3000/plugins and consult the API Usage below.
 ## Parameters
 - **search** _(required)_ — (string) Search text passed directly to the WordPress Plugin Search. Must be 3 characters.
 - **author** - Filters by author name.
-- **minRatings** - (integer) Filter by having at least minRatings
-- **maxRatings** - (integer) Filter by having at most maxRatings
+- **minRating** - (integer) Filter by having at least minRating
+- **maxRating** - (integer) Filter by having at most maxRating
 - **minReviews** - (integer) Filter by having at least minReviews
 - **maxReviews** - (integer) Filter by having at most maxReviews
 - **minInstalls** - (integer) Filter by having at least minInstalls
