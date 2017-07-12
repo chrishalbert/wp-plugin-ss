@@ -7,6 +7,12 @@
     "test-cov": "./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot --timeout 5000 --check-leaks test/ --recursive",
     "lint": "./node_modules/eslint/bin/eslint.js **/*.js"
   },
+  "keywords": [
+    "wordpress-plugin",
+    "nodejs",
+    "api",
+    "wordpress-plugin-search"
+  ],
   "bin": {
     "wp-plugin-ss": "bin/www"
   },
