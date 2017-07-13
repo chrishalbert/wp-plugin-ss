@@ -1,0 +1,154 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.2.0",
+    "title": "WordPress Plugin Simplified Search (wp-plugin-ss)",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/plugins": {
+      "get": {
+        "summary": "Returns wordpress plugins",
+        "operationId": "listPets",
+        "tags": ["Plugins"],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search text passed directly to the WordPress Plugin search.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "author",
+            "in": "query",
+            "description": "Filters by author name.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "minRating",
+            "in": "query",
+            "description": "Filters by having at least minRating.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "maxRating",
+            "in": "query",
+            "description": "Filters by having at most maxRating.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "minReviews",
+            "in": "query",
+            "description": "Filters by having at least minReviews.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "maxReviews",
+            "in": "query",
+            "description": "Filters by having at most maxReviews.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "minInstalls",
+            "in": "query",
+            "description": "Filters by having at least minInstalls.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "maxInstalls",
+            "in": "query",
+            "description": "Filters by having at most maxInstalls.",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "minVersion",
+            "in": "query",
+            "description": "Filters by having at least minVersion.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "maxVersion",
+            "in": "query",
+            "description": "Filters by having at most maxVersion.",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "CSV of values in order of precedence. Sorts ascending by default or descending with a - symbol. Recognized values=ratings,reviews,installs,authors,name,version",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of plugins",
+            "schema": {
+              "$ref": "#/definitions/Plugins"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Plugin": {
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rating": {
+          "type": "integer"
+        },
+        "reviews": {
+          "type": "integer"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "installs": {
+          "type": "integer"
+        },
+        "testedVersion": {
+          "type": "string"
+        }
+      }
+    },
+    "Plugins": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Plugin"
+      }
+    }
+  }
+}
