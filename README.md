@@ -24,7 +24,11 @@ This is good if you want to do some searches for yourself and test it out.
 $ sudo npm install wp-plugin-ss -g # Installs the API
 $ wp-plugin-ss                     # Starts the API
 ```
-Go to http://127.0.0.1:3000/plugins and consult the API Usage below.
+Use swagger docs to test at http://127.0.0.1:3000/api-docs/
+
+OR
+
+Go to http://127.0.0.1:3000/plugins and consult the API Usage below
 
 ## Usage
 
