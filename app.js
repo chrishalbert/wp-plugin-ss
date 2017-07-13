@@ -4,6 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var swaggerUi = require('swagger-ui-express');
+var swaggerDocument = require('./swagger.json');
 
 var routes = require('./routes/plugins');
 
@@ -30,8 +32,8 @@ app.use(expressValidator({
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/', routes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -39,6 +41,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // error handlers
 
