@@ -6,7 +6,7 @@
     "test": "./node_modules/mocha/bin/mocha --timeout 5000 --check-leaks test/ --recursive",
     "test-cov": "./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot --timeout 5000 --check-leaks test/ --recursive",
     "lint": "./node_modules/eslint/bin/eslint.js **/*.js",
-	"start": "node --max-old-space_size 512 ./bin/www"
+	"start": "node --max-old-space_size=512 ./bin/www"
   },
   "keywords": [
     "wordpress-plugin",
