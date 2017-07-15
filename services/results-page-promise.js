@@ -1,8 +1,9 @@
 const ResultsPage = require('../lib/results-page');
 const https = require('https');
 const Promise = require('bluebird');
+const winston = require('winston');
 
-module.exports = ResultsPagePromise = Promise.method(url => new Promise((resolve, reject) => {
+module.exports = Promise.method(url => new Promise((resolve, reject) => {
   const request = https.get(url, (response) => {
     let body = '';
     response.on('data', (data) => {
@@ -16,7 +17,7 @@ module.exports = ResultsPagePromise = Promise.method(url => new Promise((resolve
   });
 
   request.on('error', (error) => {
-    console.log(url);
+    winston.error(url, error);
     reject(error);
   });
 

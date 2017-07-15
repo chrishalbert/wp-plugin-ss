@@ -1,24 +1,23 @@
 #!/usr/bin/env node
-var MongoClient = require('mongodb').MongoClient;
-const https = require('https');
-const filters = require('../lib/filters');
-const redis = require("redis");
+const MongoClient = require('mongodb').MongoClient;
+const redis = require('redis');
+const ResultsPagePromise = require('../services/results-page-promise');
+const winston = require('winston');
+
 const redisClient = redis.createClient();
 
-redisClient.send_command('rpop', ['list'], function (listName, url) {
-  const resultsPagePromise = require("../services/results-page-promise")(url);
-
+redisClient.send_command('rpop', ['list'], (listName, wpUrl) => {
+  winston.info(`${wpUrl} (pending scraping)`);
+  const resultsPagePromise = new ResultsPagePromise(wpUrl);
   resultsPagePromise.then((resultsPage) => {
-    var url = 'mongodb://localhost:27017/test';
-
-    MongoClient.connect(url, function(err, db) {
-      let plugins = resultsPage.getAllPlugins();
-      var collection  = db.collection('plugins');
-      plugins.forEach(function (plugin) {
-        collection.updateOne({name: plugin.name}, {$set: plugin}, {upsert: true});
-        console.log(plugin.name);
+    MongoClient.connect('mongodb://localhost:27017/test', (err, db) => {
+      const plugins = resultsPage.getAllPlugins();
+      const collection = db.collection('plugins');
+      plugins.forEach((plugin) => {
+        collection.updateOne({ name: plugin.name }, { $set: plugin }, { upsert: true });
+        winston.info(`${plugin.name} (upserted)`);
       });
-      setTimeout(function() {
+      setTimeout(() => {
         db.close();
         process.exit(-1);
       }, 1000);
