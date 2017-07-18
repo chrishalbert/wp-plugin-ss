@@ -24,7 +24,7 @@ describe('ResultsPage', function() {
     describe('#getAllResultsPages()', function() {
         it('should return an array of ResultsPage\'s', function() {
             for (var i = 1; i <= 614; i++) {
-               allResultsPages.should.containEql('https://wordpress.org/plugins/search/forms/page/' + i.toString());
+               allResultsPages.should.containEql('https://wordpress.org/plugins/search/forms/page/' + i.toString() + '?');
             }
         });
     });
