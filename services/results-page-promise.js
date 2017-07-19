@@ -2,7 +2,7 @@ const ResultsPage = require('../lib/results-page');
 const https = require('https');
 const winston = require('winston');
 
-module.exports = function(url) {
+module.exports = function ResultsPagePromise(url) {
   return new Promise((resolve, reject) => {
     const request = https.get(url, (response) => {
       let body = '';

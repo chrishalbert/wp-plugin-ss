@@ -1,13 +1,19 @@
 const express = require('express');
+
 const router = express.Router();
 const pluginsQuery = require('../validators/plugins-query');
 const filters = require('../lib/filters');
 const MongoClient = require('mongodb').MongoClient;
 
+/**
+ * Builds a mongo query based off the querystring.
+ * @param {{}} reqQuery - Http query string object.
+ * @returns {{$and: Array}} A mongo formatted object.
+ */
 function buildQuery(reqQuery) {
-  let query = {$and: []};
+  const query = { $and: [] };
   const filterKeys = Object.keys(filters);
-  filterKeys.forEach(function (key) {
+  filterKeys.forEach((key) => {
     if (key in reqQuery) {
       query.$and.push(filters[key](reqQuery[key]));
     }
@@ -15,8 +21,13 @@ function buildQuery(reqQuery) {
   return query;
 }
 
+/**
+ * Builds a mongo sort object based off the sorts param.
+ * @param {string} sorts - A csv of sort keys.
+ * @returns {{}} A mongo formatted sort object.
+ */
 function buildSorts(sorts) {
-  let mongoSort = {};
+  const mongoSort = {};
   sorts.forEach((sortParam) => {
     let direction = 1;
     let param = sortParam;
@@ -30,8 +41,7 @@ function buildSorts(sorts) {
 }
 
 router.get('/plugins', (req, res) => {
-  const search = ('search' in req.query) ? req.query.search.trim() : '';
-  const sorts = ( 'sort' in req.query) ? req.query.sort.split(',') : [];
+  const sorts = ('sort' in req.query) ? req.query.sort.split(',') : [];
   const mongoQuery = buildQuery(req.query);
   const mongoSort = buildSorts(sorts);
 
@@ -43,12 +53,10 @@ router.get('/plugins', (req, res) => {
       return res.status(400).send(result.array());
     }
 
-    MongoClient.connect('mongodb://localhost:27017/test', (err,db) => {
-      db.collection('plugins').find(mongoQuery).sort(mongoSort).toArray(function(err, items) {
-        res.send(items);
-        db.close();
-      });
-    });
+    return MongoClient.connect('mongodb://localhost:27017/test', (dbErr, db) => db.collection('plugins').find(mongoQuery).sort(mongoSort).toArray((err, items) => {
+      db.close();
+      return res.send(items);
+    }));
   });
 });
 
