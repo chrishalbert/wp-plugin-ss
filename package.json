@@ -3,12 +3,12 @@
   "version": "0.2.0",
   "scripts": {
     "build": "npm run-script lint && npm run-script test-cov",
-    "test": "./node_modules/mocha/bin/mocha --timeout 5000 --check-leaks test/ --recursive",
-    "test-cov": "./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot --timeout 5000 --check-leaks test/ --recursive",
+    "test": ". ./bin/env.example && ./node_modules/mocha/bin/mocha --timeout 5000 --check-leaks test/ --recursive",
+    "test-cov": ". ./bin/env.example && ./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot --timeout 5000 --check-leaks test/ --recursive",
     "lint": "./node_modules/eslint/bin/eslint.js **/*.js",
     "start": "node --max-old-space_size=512 ./bin/www",
-    "queue-results-pages": "node -e 'require(\"./bin/queue-results-pages\")().then(function(){process.exit(0)})'",
-    "work-results-pages": "node -e 'require(\"./bin/results-page-worker\")().then(function(){process.exit(0)})'"
+    "queue-results-pages": ". ./bin/env.example && node -e 'require(\"./bin/queue-results-pages\")().then(function(){process.exit(0)})'",
+    "work-results-pages": ". ./bin/env.example && node -e 'require(\"./bin/results-page-worker\")().then(function(){process.exit(0)})'"
   },
   "keywords": [
     "wordpress-plugin",
