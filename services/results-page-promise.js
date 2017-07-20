@@ -2,7 +2,7 @@ const ResultsPage = require('../lib/results-page');
 const https = require('https');
 const winston = require('winston');
 
-module.exports = function ResultsPagePromise(url) {
+module.exports = function resultsPagePromise(url) {
   return new Promise((resolve, reject) => {
     const request = https.get(url, (response) => {
       let body = '';
@@ -16,7 +16,6 @@ module.exports = function ResultsPagePromise(url) {
     });
 
     request.on('error', (error) => {
-      reject(error);
       winston.error(url, error);
       reject(error);
     });

@@ -1,6 +1,5 @@
 var request = require('supertest');
 var nock = require('nock');
-var fs = require('fs');
 var assert = require('assert');
 var mock = require('mock-require');
 var mongoMock = require('mongo-mock');
