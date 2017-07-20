@@ -11,7 +11,7 @@ module.exports = function queueResultsPages() {
   return resultsPagePromise.then(resultsPage => resultsPage.getAllResultsPages())
     .then((urls) => {
       urls.forEach((url) => {
-        redisClient.lpush(['list', url], () => {
+        redisClient.lpush([process.env.WP_PLUGIN_SS_REDIS_QUEUE, url], () => {
         });
       });
     });

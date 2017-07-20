@@ -1,8 +1,8 @@
 #!/bin/bash
 while true ;
 do
-    if [[ ! $(pgrep -f results-page-worker.js) ]]; then
-        node ./results-page-worker.js
+    if [[ ! $(pgrep work-results-pages) ]]; then
+        npm run-script work-results-pages
     fi
 sleep 1
 done
