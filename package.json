@@ -6,7 +6,9 @@
     "test": "./node_modules/mocha/bin/mocha --timeout 5000 --check-leaks test/ --recursive",
     "test-cov": "./node_modules/istanbul/lib/cli.js cover --include-all-sources true node_modules/mocha/bin/_mocha -- --reporter dot --timeout 5000 --check-leaks test/ --recursive",
     "lint": "./node_modules/eslint/bin/eslint.js **/*.js",
-    "start": "node --max-old-space_size=512 ./bin/www"
+    "start": "node --max-old-space_size=512 ./bin/www",
+    "queue-results-pages": "node -e 'require(\"./bin/queue-results-pages\")().then(function(){process.exit(0)})'",
+    "work-results-pages": "node -e 'require(\"./bin/results-page-worker\")().then(function(){process.exit(0)})'"
   },
   "keywords": [
     "wordpress-plugin",
@@ -19,7 +21,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.5.0",
     "body-parser": "~1.13.2",
     "cheerio": "^1.0.0-rc.2",
     "cookie-parser": "~1.3.5",
@@ -33,7 +34,6 @@
     "serve-favicon": "~2.3.0",
     "swagger-node-express": "^2.1.3",
     "swagger-ui-express": "^2.0.1",
-    "thenby": "^1.2.3",
     "winston": "^2.3.1"
   },
   "devDependencies": {
@@ -49,8 +49,9 @@
     "istanbul": "^0.4.5",
     "mocha": "^3.4.2",
     "mock-require": "^2.0.2",
-    "mongo-mock": "^2.4.0",
+    "mongo-mock": "^2.4.1",
     "nock": "^9.0.13",
+    "redis-mock": "^0.17.1",
     "should": "^11.2.1",
     "supertest": "^3.0.0"
   }
