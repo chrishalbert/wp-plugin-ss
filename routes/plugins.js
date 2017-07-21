@@ -1,38 +1,49 @@
 const express = require('express');
 
 const router = express.Router();
-const Promise = require('bluebird');
-const https = require('https');
 const pluginsQuery = require('../validators/plugins-query');
-const firstBy = require('thenby');
 const filters = require('../lib/filters');
+const MongoClient = require('mongodb').MongoClient;
 
-const ResultsPage = require('../lib/results-page');
-
-const PromiseResultsPage = Promise.method(url => new Promise((resolve, reject) => {
-  const request = https.get(url, (response) => {
-    let body = '';
-    response.on('data', (data) => {
-      body += data;
-    });
-
-    response.on('end', () => {
-      resolve(new ResultsPage(body));
-    });
+/**
+ * Builds a mongo query based off the querystring.
+ * @param {{}} reqQuery - Http query string object.
+ * @returns {{$and: Array}} A mongo formatted object.
+ */
+function buildQuery(reqQuery) {
+  const query = { $and: [] };
+  const filterKeys = Object.keys(filters);
+  filterKeys.forEach((key) => {
+    if (key in reqQuery) {
+      query.$and.push(filters[key](reqQuery[key]));
+    }
   });
+  return query;
+}
 
-  request.on('error', (error) => {
-    reject(error);
+/**
+ * Builds a mongo sort object based off the sorts param.
+ * @param {string} sorts - A csv of sort keys.
+ * @returns {{}} A mongo formatted sort object.
+ */
+function buildSorts(sorts) {
+  const mongoSort = {};
+  sorts.forEach((sortParam) => {
+    let direction = 1;
+    let param = sortParam;
+    if (sortParam[0] === '-') {
+      direction = -1;
+      param = sortParam.substring(1);
+    }
+    mongoSort[param] = direction;
   });
-
-  request.end();
-}));
-
+  return mongoSort;
+}
 
 router.get('/plugins', (req, res) => {
-  let plugins = [];
-  const allPages = [];
-  const search = ('search' in req.query) ? req.query.search.trim().replace(/ /g, '+') : '';
+  const sorts = ('sort' in req.query) ? req.query.sort.split(',') : [];
+  const mongoQuery = buildQuery(req.query);
+  const mongoSort = buildSorts(sorts);
 
   req.checkQuery(pluginsQuery);
   req.checkQuery('sort', 'Must have valid sort values.').isSortedCsv();
@@ -42,56 +53,10 @@ router.get('/plugins', (req, res) => {
       return res.status(400).send(result.array());
     }
 
-    const sorts = typeof req.query.sort === 'undefined' ? [] : req.query.sort.split(',');
-
-    const resultsPagesPromise = PromiseResultsPage(`https://wordpress.org/plugins/search/${search}/`)
-      .then(landingResultsPage => landingResultsPage.getAllResultsPages())
-      .then((subsequentResultsPages) => {
-        subsequentResultsPages.forEach((url) => {
-          allPages.push(PromiseResultsPage(url).then((resultsPage) => {
-            plugins = plugins.concat(resultsPage.getAllPlugins());
-          }));
-        });
-        return allPages;
-      });
-
-    return Promise.all(resultsPagesPromise).then(() => {
-      let thenBySort;
-
-      const queryParams = Object.keys(filters);
-      // Apply filter by looping through the available filters
-      for (let i = 0; i < queryParams.length; i += 1) {
-        // If the filter is in the query string
-        const queryParam = queryParams[i];
-        if (queryParam in req.query) {
-          // Apply it
-          plugins = plugins.filter(plugin =>
-            filters[queryParam].comparison(
-              req.query[queryParam],
-              plugin[filters[queryParam].property]));
-        }
-      }
-
-      sorts.forEach((sortParam, i) => {
-        let direction = 1;
-        let param = sortParam;
-        if (sortParam[0] === '-') {
-          direction = -1;
-          param = sortParam.substring(1);
-        }
-        if (i === 0) {
-          thenBySort = firstBy(param, direction);
-        } else {
-          thenBySort = thenBySort.thenBy(param, direction);
-        }
-      });
-
-      if (sorts.length) {
-        plugins.sort(thenBySort);
-      }
-
-      res.send(plugins);
-    });
+    return MongoClient.connect('mongodb://localhost:27017/test', (dbErr, db) => db.collection('plugins').find(mongoQuery).sort(mongoSort).toArray((err, items) => {
+      db.close();
+      return res.send(items);
+    }));
   });
 });
 

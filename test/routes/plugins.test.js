@@ -1,7 +1,21 @@
 var request = require('supertest');
 var nock = require('nock');
-var fs = require('fs');
 var assert = require('assert');
+var mock = require('mock-require');
+var mongoMock = require('mongo-mock');
+mock('mongodb', mongoMock);
+var mongodb = require('mongodb');
+var mockMongoClient = mongodb.MongoClient;
+
+var ibericode = require('./../data/ibericode.js');
+
+before(function () {
+  mockMongoClient.connect('mongodb://localhost:27017/test', {}, function(err, db) {
+    db.collection('plugins').insert(ibericode.dump, function (err, result) {
+      setTimeout(db.close, 1000);
+    });
+  });
+});
 
 describe('routes/plugins', function() {
   var server;
@@ -9,17 +23,6 @@ describe('routes/plugins', function() {
   beforeEach(function () {
     delete require.cache[require.resolve('./../../bin/www')];
     server = require('./../../bin/www');
-    fs.readFile(__dirname + '/../data/one-results-page.html', 'utf8', function (err, data) {
-      if (err) {
-        return console.log(err);
-      }
-      nock('https://wordpress.org')
-        .get('/plugins/search/ibericode/')
-        .reply(200, data);
-      nock('https://wordpress.org')
-        .get('/plugins/search/ibericode/page/1')
-        .reply(200, data);
-    });
   });
 
   afterEach(function () {
@@ -31,14 +34,15 @@ describe('routes/plugins', function() {
   });
 
   it('loads plugins on search /plugins?search=ibericode', function loadsPlugins(done) {
-    request(server).get('/plugins?search=ibericode').expect(200, done);
+    request(server).get('/plugins?search=ibericode').expect(200)
+      .end((err) => done(err));
   });
 
   it('sorts plugins ascending /plugins?search=ibericode&sort=name', function sortsByNameAsc(done) {
     request(server).get('/plugins?search=ibericode&sort=name').expect(200)
       .expect(function(res) {
         assert.equal(res.body[0].name, 'Boxzilla');
-        assert.equal(res.body.length, 12);
+        assert.equal(res.body.length, 10);
       })
       .end(function(err) {
         done(err);
@@ -48,19 +52,19 @@ describe('routes/plugins', function() {
   it('sorts plugins descending /plugins?search=ibericode&sort=-name', function sortsByNameDesc(done) {
     request(server).get('/plugins?search=ibericode&sort=-name').expect(200)
       .expect(function(res) {
-        assert.equal(res.body[0].name, 'WP Newsletter Subscription');
-        assert.equal(res.body.length, 12);
+        assert.equal(res.body[0].name, 'Social Sharing (by Danny)');
+        assert.equal(res.body.length, 10);
       })
       .end(function(err) {
         done(err);
       });
   });
 
-  it('sorts plugins by multiple params /plugins?search=ibericode&sort=author,installs', function sortsByAuthorInstalls(done) {
-    request(server).get('/plugins?search=ibericode&sort=author,installs').expect(200)
+  it('sorts plugins by multiple params /plugins?search=ibericode&sort=ratings,-reviews', function sortsByAuthorInstalls(done) {
+    request(server).get('/plugins?search=ibericode&sort=-ratings,-reviews').expect(200)
       .expect(function(res) {
-        assert.equal(res.body[1].name, 'MailChimp for WordPress – WPML Integration');
-        assert.equal(res.body.length, 12);
+        assert.equal(res.body[1].name, 'Scroll Triggered Boxes');
+        assert.equal(res.body.length, 10);
       })
       .end(function(err) {
         done(err);
@@ -90,7 +94,7 @@ describe('routes/plugins', function() {
   it('filters by maxRating /plugins?search=ibericode&maxRating=0', function filterByAuthor(done) {
     request(server).get('/plugins?search=ibericode&maxRating=0').expect(200)
       .expect(function(res) {
-        assert.equal(res.body.length, 2);
+        assert.equal(res.body.length, 1);
       })
       .end(function(err) {
         done(err);
@@ -110,7 +114,7 @@ describe('routes/plugins', function() {
   it('filters by maxReviews /plugins?search=ibericode&maxReviews=10', function filterByAuthor(done) {
     request(server).get('/plugins?search=ibericode&maxReviews=10').expect(200)
       .expect(function(res) {
-        assert.equal(res.body.length, 5);
+        assert.equal(res.body.length, 4);
       })
       .end(function(err) {
         done(err);
@@ -120,7 +124,7 @@ describe('routes/plugins', function() {
   it('filters by minInstalls /plugins?search=ibericode&minInstalls=1000', function filterByAuthor(done) {
     request(server).get('/plugins?search=ibericode&minInstalls=1000').expect(200)
       .expect(function(res) {
-        assert.equal(res.body.length, 9);
+        assert.equal(res.body.length, 8);
       })
       .end(function(err) {
         done(err);
@@ -130,7 +134,7 @@ describe('routes/plugins', function() {
   it('filters by maxInstalls /plugins?search=ibericode&maxInstalls=5000', function filterByAuthor(done) {
     request(server).get('/plugins?search=ibericode&maxInstalls=5000').expect(200)
       .expect(function(res) {
-        assert.equal(res.body.length, 5);
+        assert.equal(res.body.length, 4);
       })
       .end(function(err) {
         done(err);
@@ -150,7 +154,7 @@ describe('routes/plugins', function() {
   it('filters by maxVersion /plugins?search=ibericode&maxVersion=4.6', function filterByAuthor(done) {
     request(server).get('/plugins?search=ibericode&maxVersion=4.6').expect(200)
       .expect(function(res) {
-        assert.equal(res.body.length, 2);
+        assert.equal(res.body.length, 1);
       })
       .end(function(err) {
         done(err);
