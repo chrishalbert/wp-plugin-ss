@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "version": "0.2.0",
+    "version": "0.3.1",
     "title": "WordPress Plugin Simplified Search (wp-plugin-ss)",
     "license": {
       "name": "MIT"
