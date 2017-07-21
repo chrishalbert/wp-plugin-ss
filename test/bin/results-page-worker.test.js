@@ -7,12 +7,10 @@ const mongoMock = require('mongo-mock');
 mock('redis', redisMock);
 mock('mongodb', mongoMock);
 const redis = require('redis');
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({url: process.env.WP_PLUGIN_SS_REDIS_URL});
 const mongo = require('mongodb');
 
-const host = process.env.WP_PLUGIN_SS_MONGO_HOST;
-const port = process.env.WP_PLUGIN_SS_MONGO_PORT;
-const database = process.env.WP_PLUGIN_SS_MONGO_DB;
+const mongoDbUri = process.env.WP_PLUGIN_SS_MONGODB_URI;
 
 describe('bin/results-page-worker', function() {
   let html = '';
@@ -26,7 +24,7 @@ describe('bin/results-page-worker', function() {
       nock('https://wordpress.org')
         .get('/plugins/?s=')
         .reply(200, html);
-      redisClient.rpush(['list', 'https://wordpress.org/plugins/?s='], function() {
+      redisClient.rpush([process.env.WP_PLUGIN_SS_REDIS_QUEUE, 'https://wordpress.org/plugins/?s='], function() {
         done();
       });
     });
@@ -41,7 +39,7 @@ describe('bin/results-page-worker', function() {
   it('upserted 12 plugins into mongo', function resultsPagePromiseEnder(done) {
     const resultsPageWorker = require('./../../bin/results-page-worker');
     resultsPageWorker().then(function() {
-      mongo.MongoClient.connect(`mongodb://${host}:${port}/${database}`, function (err, db) {
+      mongo.MongoClient.connect(mongoDbUri, function (err, db) {
         db.collection('plugins').count({},
           function(err,results) {
             assert.equal(12, results);
