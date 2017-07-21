@@ -10,6 +10,10 @@ const redis = require('redis');
 const redisClient = redis.createClient();
 const mongo = require('mongodb');
 
+const host = process.env.WP_PLUGIN_SS_MONGO_HOST;
+const port = process.env.WP_PLUGIN_SS_MONGO_PORT;
+const database = process.env.WP_PLUGIN_SS_MONGO_DB;
+
 describe('bin/results-page-worker', function() {
   let html = '';
 
@@ -37,8 +41,7 @@ describe('bin/results-page-worker', function() {
   it('upserted 12 plugins into mongo', function resultsPagePromiseEnder(done) {
     const resultsPageWorker = require('./../../bin/results-page-worker');
     resultsPageWorker().then(function() {
-      console.log('sadfasd');
-      mongo.MongoClient.connect('mongodb://localhost:27017/test', function (err, db) {
+      mongo.MongoClient.connect(`mongodb://${host}:${port}/${database}`, function (err, db) {
         db.collection('plugins').count({},
           function(err,results) {
             assert.equal(12, results);
