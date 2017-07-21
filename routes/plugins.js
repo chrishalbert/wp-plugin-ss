@@ -5,6 +5,8 @@ const pluginsQuery = require('../validators/plugins-query');
 const filters = require('../lib/filters');
 const MongoClient = require('mongodb').MongoClient;
 
+const mongoDbUri = process.env.WP_PLUGIN_SS_MONGODB_URI;
+
 /**
  * Builds a mongo query based off the querystring.
  * @param {{}} reqQuery - Http query string object.
@@ -53,10 +55,11 @@ router.get('/plugins', (req, res) => {
       return res.status(400).send(result.array());
     }
 
-    return MongoClient.connect('mongodb://localhost:27017/test', (dbErr, db) => db.collection('plugins').find(mongoQuery).sort(mongoSort).toArray((err, items) => {
-      db.close();
-      return res.send(items);
-    }));
+    return MongoClient.connect(mongoDbUri, (dbErr, db) => db.collection('plugins')
+      .find(mongoQuery).sort(mongoSort).toArray((err, items) => {
+        db.close();
+        return res.send(items);
+      }));
   });
 });
 
