@@ -28,10 +28,9 @@ or it run it locally.
 ### Configurations
 Determine the configuration variables and save this to a /path/to/file.
 ```
-export WP_PLUGIN_SS_MONGO_HOST=127.0.0.1
-export WP_PLUGIN_SS_MONGO_PORT=27017
-export WP_PLUGIN_SS_MONGO_DB=test
-export WP_PLUGIN_SS_REDIS_QUEUE=list     # To get up to date info
+export WP_PLUGIN_SS_MONGODB_URI=mongodb://127.0.0.1:27017/test
+export WP_PLUGIN_SS_REDIS_URL=redis://127.0.0.1:19879
+export WP_PLUGIN_SS_REDIS_QUEUE=plugins
 ```
 You will either need to run the above script (locally) or assign these values in your IDE/cloud service. If not, export configurations to environment locally:
 ```bash
@@ -45,10 +44,10 @@ $ npm install wp-plugin-ss
 ```
 
 ### Run Locally
-This is good if you want to do some searches for yourself and test it out.
+This is good if you want to do some searches for yourself and test it out (replace the values in braces, likely localhost and 27017 if local).
 ```bash
 $ npm install wp-plugin-ss -g    # Installs the API
-$ mongorestore --db $WP_PLUGIN_SS_MONGO_DB --host $WP_PLUGIN_SS_MONGO_HOST --port $WP_PLUGIN_SS_MONGO_PORT  ~/.npm-packages/lib/node_modules/wp-plugin-ss/dump/test 
+$ mongorestore --db {mongo db} --host {mongo host} --port {mongo port}  ~/.npm-packages/lib/node_modules/wp-plugin-ss/dump/test 
 $ . /path/to/file                # Loads the configuration
 $ wp-plugin-ss                   # Starts the API
 ```
@@ -56,7 +55,7 @@ $ wp-plugin-ss                   # Starts the API
 ### Populate database:
 Run this to populate your mongo database with some starting data.
 ```
-$ mongorestore --db $WP_PLUGIN_SS_MONGO_DB --host $WP_PLUGIN_SS_MONGO_HOST --port $WP_PLUGIN_SS_MONGO_PORT  dump/test 
+$ mongorestore --db {mongo db} --host {mongo host} --port {mongo port}  ~/.npm-packages/lib/node_modules/wp-plugin-ss/dump/test 
 ```
 
 ### Run
@@ -108,6 +107,3 @@ Get ajax plugin ordered by most recent version tested and then most installs.
 ```
 http://127.0.0.1:3000/plugins?search=ajax&sort=-version,-installs
 ```
-
-## Bugs/Feature Requests
-Please submit here!
