@@ -4,10 +4,8 @@ const redis = require('redis');
 const ResultsPagePromise = require('../services/results-page-promise');
 const winston = require('winston');
 
-const redisClient = redis.createClient();
-const host = process.env.WP_PLUGIN_SS_MONGO_HOST;
-const port = process.env.WP_PLUGIN_SS_MONGO_PORT;
-const database = process.env.WP_PLUGIN_SS_MONGO_DB;
+const redisClient = redis.createClient({ url: process.env.WP_PLUGIN_SS_REDIS_URL });
+const mongoDbUri = process.env.WP_PLUGIN_SS_MONGODB_URI;
 
 module.exports = function resultsPageWorker() {
   return new Promise((resolve) => {
@@ -15,7 +13,7 @@ module.exports = function resultsPageWorker() {
       winston.info(`${wpUrl} (pending scraping)`);
       const resultsPagePromise = new ResultsPagePromise(wpUrl);
       resultsPagePromise.then((resultsPage) => {
-        MongoClient.connect(`mongodb://${host}:${port}/${database}`).then((db) => {
+        MongoClient.connect(mongoDbUri).then((db) => {
           const plugins = resultsPage.getAllPlugins();
           const collection = db.collection('plugins');
           let processedPlugins = 0;

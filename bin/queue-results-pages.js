@@ -4,7 +4,7 @@ const resultsPagePromise = require('../services/results-page-promise')('https://
 const redis = require('redis');
 
 // Add ability to accept options
-const redisClient = redis.createClient();
+const redisClient = redis.createClient({ url: process.env.WP_PLUGIN_SS_REDIS_URL });
 
 module.exports = function queueResultsPages() {
 // Push results pages to our redisClient
